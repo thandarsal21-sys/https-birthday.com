@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Rainbow</title>
+
+<style>
+body{
+margin:0;
+font-family:sans-serif;
+background:black;
+overflow:hidden;
+color:white;
+text-align:center;
+}
+
+/* RAINBOW TEXT */
+h1{
+font-size:40px;
+margin-top:20px;
+background:linear-gradient(90deg,
+white,brown,yellow,green,blue,indigo,violet);
+-webkit-background-clip:text;
+color:transparent;
+animation:move 3s infinite linear;
+}
+
+@keyframes move{
+0%{filter:hue-rotate(0deg);}
+100%{filter:hue-rotate(360deg);}
+}
+
+/* PAGE */
+.page{
+display:none;
+height:100vh;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.active{
+display:flex;
+}
+
+/* BUTTON */
+button{
+padding:12px 25px;
+border:none;
+border-radius:30px;
+background:#ff4d6d;
+color:white;
+font-size:18px;
+}
+
+/* IMAGE */
+img{
+width:250px;
+height:250px;
+border-radius:20px;
+box-shadow:0 0 20px white;
+object-fit:cover;
+}
+
+/* HEARTS */
+.heart{
+position:absolute;
+animation:float 6s linear infinite;
+font-size:20px;
+}
+
+@keyframes float{
+0%{transform:translateY(100vh);}
+100%{transform:translateY(-100vh);opacity:0;}
+}
+
+/* RAINBOW CIRCLE */
+.rainbow{
+position:absolute;
+width:20px;
+height:20px;
+border-radius:50%;
+background:conic-gradient(red,yellow,green,blue,purple,red);
+animation:spin 3s linear infinite;
+opacity:0.7;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+/* FIREWORK */
+canvas{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<audio autoplay loop>
+<source src="birthday.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<!-- HEARTS -->
+<div class="heart" style="left:10%">❤️</div>
+<div class="heart" style="left:30%;animation-delay:2s">🎈</div>
+<div class="heart" style="left:60%;animation-delay:1s">💗</div>
+
+<!-- RAINBOW FLOAT -->
+<div class="rainbow" style="left:20%;top:80%"></div>
+<div class="rainbow" style="left:50%;top:70%"></div>
+<div class="rainbow" style="left:80%;top:85%"></div>
+
+<!-- PAGE 1 -->
+<div class="page active" id="p1">
+<h1>🎁 Open Gift 🎁</h1>
+<button onclick="next(2)">Start</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="p2">
+<h1>🎂Happy Birthday</h1>
+<p>‌မွေးနေ့မှစ နေ့ရက်တိုင်းပျော်ရွှင်ချမ်းမြေ့ပြီး ရင့်ကျက်တည်ငြိမ်တဲ့အရွယ် မြန်မြန်ရောက်‌တော့နော်🐣❤️</p>
+<button onclick="next(3)">Next ➡️</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="p3">
+<img src="photo1.jpg">
+<button onclick="next(4)">Next</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" id="p4">
+<img src="photo2.jpg">
+<button onclick="next(5)">Next</button>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page" id="p5">
+<img src="photo3.jpg">
+<button onclick="next(6)">Final 💌</button>
+</div>
+
+<!-- PAGE 6 -->
+<div class="page" id="p6">
+<h1>💓 Surprise💓</h1>
+<p id="text"></p>
+</div>
+
+<script>
+function next(n){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById("p"+n).classList.add("active");
+
+if(n==6){
+type();
+fire();
+}
+}
+
+/* TYPE */
+let t="🎉 Happy Birthday! May your life shine like a rainbow 🌈❤️";
+let i=0;
+function type(){
+if(i<t.length){
+document.getElementById("text").innerHTML+=t.charAt(i);
+i++;
+setTimeout(type,70);
+}
+}
+
+/* FIREWORK */
+let c=document.getElementById("fireworks");
+let ctx=c.getContext("2d");
+c.width=window.innerWidth;
+c.height=window.innerHeight;
+
+let parts=[];
+
+function fire(){
+setInterval(()=>{
+parts.push({
+x:Math.random()*c.width,
+y:c.height,
+vx:(Math.random()-0.5)*5,
+vy:-Math.random()*6,
+life:100
+});
+},150);
+
+anim();
+}
+
+function anim(){
+ctx.clearRect(0,0,c.width,c.height);
+
+parts.forEach((p,i)=>{
+p.x+=p.vx;
+p.y+=p.vy;
+p.life--;
+
+ctx.fillStyle="white";
+ctx.fillRect(p.x,p.y,3,3);
+
+if(p.life<=0) parts.splice(i,1);
+});
+
+requestAnimationFrame(anim);
+}
+</script>
+
+</body>
+</html>
